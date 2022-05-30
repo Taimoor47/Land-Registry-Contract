@@ -64,9 +64,6 @@ contract LandBuySell{
     mapping(address => bool) public IsSellerVerified;
     mapping(uint => bool) public LandIsVerified;
     mapping(address => bool) public IsSeller;
-    // mapping(address => bool) public IsSeller;
-    // mapping(address => bool) public IsBuyer;
-
 
 
     // Landinspector Constructor
@@ -83,7 +80,6 @@ contract LandBuySell{
         function SellerRegistration(string memory _name,uint _age,string memory _city,uint _cnic,string memory _email)public{
         require(!IsBuyer[msg.sender] == true, "This address rigesterd as a Buyer");
         IsSeller[msg.sender] = true;
-        // IsSeller[msg.sender] = true;
         SellerDetails[msg.sender]= RegisterSeller(_name,_age,_city,_cnic,_email);
     }
 
@@ -97,7 +93,6 @@ contract LandBuySell{
 
     function RejectSeller(address sellerId)public{
         require(LandInspector == msg.sender);
-
          SellerRejected[sellerId] = true;
          IsSellerVerified[sellerId] = false;
     }
