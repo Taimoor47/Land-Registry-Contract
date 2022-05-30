@@ -180,7 +180,6 @@ contract LandBuySell{
         require(Landverified[_LnadId] == true , "Land is not verified");
         require(LandOwner[_LnadId] == msg.sender, "You are not the Owner");
         LandOwner[_LnadId] = NewOwner;
-
     }
 
     //By fowllowing functions you can check Land city, Area, and Price.
