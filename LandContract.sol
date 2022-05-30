@@ -177,7 +177,7 @@ contract LandBuySell{
     //transfer Ownership function allow seller/land owner to transfer his ownership to desirable address.
 
     function TransferOwnership(uint _LnadId,address NewOwner)public{
-        require(IsSellerVerified[msg.sender] == true , "Only Seller can Transfer");
+        require(Landverified[_LnadId] == true , "Land is not verified");
         require(LandOwner[_LnadId] == msg.sender, "You are not the Owner");
         LandOwner[_LnadId] = NewOwner;
 
