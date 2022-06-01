@@ -169,7 +169,7 @@ contract LandBuySell{
     function BuyLand(uint Id) public payable{
         require(LandIsVerified[Id] == true && IsBuyerVerifeid[msg.sender] == true, 
         "May Land or Buyer is not Verified");
-        require( msg.value/1**18  >= LandDetails[Id].LandPrice, "You don't have enough amount to buy");
+        require( msg.value/1**18  == LandDetails[Id].LandPrice, "You don't have enough amount to buy");
         payable(LandOwner[Id]).transfer(msg.value);
         LandOwner[Id] = msg.sender;
     }
