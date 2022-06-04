@@ -66,6 +66,10 @@ contract LandBuySell{
     mapping(address => bool) public IsSeller;
 
 
+ 
+    
+
+
     // Landinspector Constructor
 
        constructor()public{
@@ -80,7 +84,9 @@ contract LandBuySell{
         function SellerRegistration(string memory _name,uint _age,string memory _city,uint _cnic,string memory _email)public{
         require(!IsBuyer[msg.sender] == true, "This address rigesterd as a Buyer");
         IsSeller[msg.sender] = true;
+        // IsSeller[msg.sender] = true;
         SellerDetails[msg.sender]= RegisterSeller(_name,_age,_city,_cnic,_email);
+        
     }
 
     //You can check if seller verified or rejected
@@ -93,6 +99,7 @@ contract LandBuySell{
 
     function RejectSeller(address sellerId)public{
         require(LandInspector == msg.sender);
+
          SellerRejected[sellerId] = true;
          IsSellerVerified[sellerId] = false;
     }
@@ -169,7 +176,8 @@ contract LandBuySell{
     function BuyLand(uint Id) public payable{
         require(LandIsVerified[Id] == true && IsBuyerVerifeid[msg.sender] == true, 
         "May Land or Buyer is not Verified");
-        require( msg.value/1**18  == LandDetails[Id].LandPrice, "You don't have enough amount to buy");
+        require(!(msg.value/(1 ether) > LandDetails[Id].LandPrice), "You are sending grater amount");
+        require( msg.value/(1 ether) == LandDetails[Id].LandPrice, "You don't have enough amount to buy");
         payable(LandOwner[Id]).transfer(msg.value);
         LandOwner[Id] = msg.sender;
     }
