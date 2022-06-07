@@ -45,10 +45,7 @@ contract LandBuySell{
     //Veriables
 
      address public LandInspector;
-     address private sellerId;
      address private buyerId;
-     uint private LandId;
-
 
     //Mappings
  
@@ -66,8 +63,11 @@ contract LandBuySell{
     mapping(address => bool) public IsSeller;
 
 
- 
-    
+    //Events
+
+    event sellerRegistration(address sellerId, string name, uint cninc);
+    event buyerRegistration(address _id, string name, uint cninc);
+    event landInfo(uint LandId, address _landOwner);
 
 
     // Landinspector Constructor
@@ -84,8 +84,8 @@ contract LandBuySell{
         function SellerRegistration(string memory _name,uint _age,string memory _city,uint _cnic,string memory _email)public{
         require(!IsBuyer[msg.sender] == true, "This address rigesterd as a Buyer");
         IsSeller[msg.sender] = true;
-        // IsSeller[msg.sender] = true;
         SellerDetails[msg.sender]= RegisterSeller(_name,_age,_city,_cnic,_email);
+        emit sellerRegistration(msg.sender, _name, _cnic);
         
     }
 
@@ -99,7 +99,6 @@ contract LandBuySell{
 
     function RejectSeller(address sellerId)public{
         require(LandInspector == msg.sender);
-
          SellerRejected[sellerId] = true;
          IsSellerVerified[sellerId] = false;
     }
@@ -113,6 +112,7 @@ contract LandBuySell{
         SellerDetails[msg.sender].City = _city;
         SellerDetails[msg.sender].CNIC = _cnic;
         SellerDetails[msg.sender].Email = _email;
+        emit sellerRegistration(msg.sender, _name, _cnic);
     }
      
     //Only Verified Seller can Register Land
@@ -124,6 +124,7 @@ contract LandBuySell{
         RegisterdLand[id] = true;
         LandDetails[id]= landregistry(_area,_state,_city,_landPrice,_propertyPID);
         LandOwner[id] = msg.sender;
+        emit landInfo(id, msg.sender);
     }
 
     //Only Registered land is verifiable. (Only LandInspector can verify the Land by LandId)
@@ -140,8 +141,8 @@ contract LandBuySell{
     function BuyerRigestration(string memory _name,uint _age,string memory _city,uint _cnic,string memory _email)public{
         require(!IsSeller[msg.sender] == true, "This Address Registered as a Seller");
         IsBuyer[msg.sender] = true;
-
         BuyerDetails[msg.sender]= RegisterBuyer(_name,_age,_city,_cnic,_email);
+        emit buyerRegistration(msg.sender, _name, _cnic);
     }
 
     //You can check if buyer is verified or rejected
@@ -166,6 +167,7 @@ contract LandBuySell{
         BuyerDetails[msg.sender].City = _city;
         BuyerDetails[msg.sender].CNIC = _cnic;
         BuyerDetails[msg.sender].Email = _email;
+        emit buyerRegistration(msg.sender, _name, _cnic);
     }
 
     //Land purchase and payment function. Verified Buyer can buy verified land.
@@ -180,6 +182,7 @@ contract LandBuySell{
         require( msg.value/(1 ether) == LandDetails[Id].LandPrice, "You don't have enough amount to buy");
         payable(LandOwner[Id]).transfer(msg.value);
         LandOwner[Id] = msg.sender;
+        emit landInfo(Id, msg.sender);
     }
 
     //transfer Ownership function allow seller/land owner to transfer his ownership to desirable address.
@@ -188,6 +191,7 @@ contract LandBuySell{
         require(LandIsVerified[_LnadId] == true , "Land is not verified");
         require(LandOwner[_LnadId] == msg.sender, "You are not the Owner");
         LandOwner[_LnadId] = NewOwner;
+        emit landInfo(_LnadId, NewOwner);
 
     }
 
